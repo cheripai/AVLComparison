@@ -5,7 +5,7 @@ import Data.Maybe
 import Data.Tree.AVL as A
 import Data.COrdering
 import System.CPUTime
-import qualified Data.ByteString.Lazy.Char8 as B
+import qualified Data.ByteString.Char8 as B
 import Control.Monad.Par
 import Control.DeepSeq
 import Data.List.Split
@@ -17,21 +17,6 @@ $(deriveNFData ''AVL)
 load :: AVL B.ByteString -> [B.ByteString] -> AVL B.ByteString
 load t [] = t
 load t (x:xs) = A.push (fstCC x) x (load t xs)
-
-
-unload :: AVL B.ByteString -> [B.ByteString] -> IO ()
-unload t [] = return ()
-unload t (x:xs) = do
-            let t' = snd $ A.assertPop (fstCC x) t
-            unload t' xs
-
-
-find :: AVL B.ByteString -> [B.ByteString] -> Bool 
-find t [] = True
-find t (x:xs) = do
-        if (A.contains t (compare x)) == False
-            then False
-            else find t xs
 
 
 main = do
